@@ -81,11 +81,13 @@ void mostrarFrecuencia(String letra, int frequency){
 }
 
 void setearYMostrarFrecuencia(){
+  int pulseInLow = pulseIn(sensorOut, LOW);
+  
   // Setting red filtered photodiodes to be read
   digitalWrite(S2, LOW);
   digitalWrite(S3, LOW);
   // Reading the output frequency
-  frequency = pulseIn(sensorOut, LOW);
+  frequency = pulseInLow;
   int R = frequency;
   // Printing the value on the serial monitor
   mostrarFrecuencia("R", frequency);
@@ -94,7 +96,7 @@ void setearYMostrarFrecuencia(){
   digitalWrite(S2, HIGH);
   digitalWrite(S3, HIGH);
   // Reading the output frequency
-  frequency = pulseIn(sensorOut, LOW);
+  frequency = pulseInLow;
   int G = frequency;
   // Printing the value on the serial monitor
   mostrarFrecuencia("G", frequency);
@@ -104,7 +106,7 @@ void setearYMostrarFrecuencia(){
   digitalWrite(S2, LOW);
   digitalWrite(S3, HIGH);
   // Reading the output frequency
-  frequency = pulseIn(sensorOut, LOW);
+  frequency = pulseInLow;
   int B = frequency;
   // Printing the value on the serial monitor
   mostrarFrecuencia("B", frequency);

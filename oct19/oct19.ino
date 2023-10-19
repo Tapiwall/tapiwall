@@ -26,7 +26,7 @@ int maximoR =MAXIMO_RGB, minimoR =MINIMO_RGB, maximoG =MAXIMO_RGB, minimoG =MINI
 __________________________________________________ARRAY
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 int rojo[2];
-int verde[2]
+int verde[2];
 int azul[2];
 /*///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 __________________________________________________SETUP
@@ -72,7 +72,15 @@ void resetServo(){
 /*///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 _________________________________________________READ COLOR
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-int readColor(int maximoR, int minimoR, int maximoG, int minimoG, int maximoB, int minimoB) {
+void mostrarFrecuencia(String letra, int frequency){
+  letra.concat("= ");
+  letra.concat(frequency);
+  letra.concat("   ");
+  Serial.print(letra);
+  delay(500);
+}
+
+void setearYMostrarFrecuencia(){
   // Setting red filtered photodiodes to be read
   digitalWrite(S2, LOW);
   digitalWrite(S3, LOW);
@@ -80,10 +88,7 @@ int readColor(int maximoR, int minimoR, int maximoG, int minimoG, int maximoB, i
   frequency = pulseIn(sensorOut, LOW);
   int R = frequency;
   // Printing the value on the serial monitor
-  Serial.print("R= ");
-  Serial.print(frequency);
-  Serial.print("  ");
-  delay(500);
+  mostrarFrecuencia("R", frequency);
 
   // Setting Green filtered photodiodes to be read
   digitalWrite(S2, HIGH);
@@ -92,10 +97,8 @@ int readColor(int maximoR, int minimoR, int maximoG, int minimoG, int maximoB, i
   frequency = pulseIn(sensorOut, LOW);
   int G = frequency;
   // Printing the value on the serial monitor
-  Serial.print("G= ");
-  Serial.print(frequency);
-  Serial.print("  ");
-  delay(500);
+  mostrarFrecuencia("G", frequency);
+
 
   // Setting Blue filtered photodiodes to be read
   digitalWrite(S2, LOW);
@@ -104,11 +107,11 @@ int readColor(int maximoR, int minimoR, int maximoG, int minimoG, int maximoB, i
   frequency = pulseIn(sensorOut, LOW);
   int B = frequency;
   // Printing the value on the serial monitor
-  Serial.print("B= ");
-  Serial.print(frequency);
-  Serial.println("  ");
-  delay(500);
+  mostrarFrecuencia("B", frequency);
+}
 
+void logicaDeReadColor(int maximoR, int minimoR, int maximoG, int minimoG, int maximoB, int minimoB){
+  //No sé si necesita un return o devuelve las variables con el nuevo valor. Averiguen eso.
   if (maximoR < R){
     maximoR = R;
   }
@@ -127,38 +130,43 @@ int readColor(int maximoR, int minimoR, int maximoG, int minimoG, int maximoB, i
   if (minimoB > B){
     minimoB = B;
   }
-  Serial.print("max rojo: ");
-  Serial.print(maximoR);
-  Serial.print("  ");
-  Serial.print("min rojo: ");
-  Serial.print(minimoR);
-  Serial.print("  ");
-  Serial.print("max verde: ");
-  Serial.print(maximoG);
-  Serial.print("  ");
-  Serial.print("min verde: ");
-  Serial.print(minimoG);
-  Serial.print("  ");
-  Serial.print("max azul: ");
-  Serial.print(maximoB);
-  Serial.print("  ");
-  Serial.print("min azul: ");
-  Serial.print(minimoB);
-  Serial.print("  ");
 
-/______________________________________________IF  (COLORES)/
-  if 
-  (R<45 && G<65 && G>55) {
+}
+
+void mostrarMinMaxColor(String color, int min, int max){
+  String mensajeMax= "Max-", mensajeMin= "Min-";
+  mensajeMax.concat(color);
+  mensajeMax.concat(":  ");
+  
+  mensajeMin.concat(color);
+  mensajeMin.concat(":  ");
+
+  Serial.print(mensajeMax);
+  Serial.print(max);
+  Serial.print("  ");
+  Serial.print(mensajeMin);
+  Serial.print(min);
+  Serial.print("  ");
+}
+
+int readColor(int maximoR, int minimoR, int maximoG, int minimoG, int maximoB, int minimoB) {
+  setearYMostrarFrecuencia();
+  logicaDeReadColor(maximoR, minimoR, maximoG, minimoG, maximoB, minimoB);
+  
+  mostrarMinMaxColor("rojo", minimoR, maximoR);
+  mostrarMinMaxColor("verde", minimoG, maximoG);
+  mostrarMinMaxColor("azul", minimoB, maximoB);
+
+//______________________________________________IF  (COLORES)/
+  if (R<45 && G<65 && G>55) {
     Serial.println("Rojo");
     tapa = true;
     color = 0;
-    } 
-  else if (R<40 && R>20 && G<60 && G>45) {
+  }else if (R<40 && R>20 && G<60 && G>45) {
     Serial.println("Verde");
     tapa = true;
     color = 1;
-  } 
-  else if (G<50 && G>30 && B>26) {
+  }else if (G<50 && G>30 && B>26) {
     Serial.println("Azul");
     tapa = true;
     color = 2;
